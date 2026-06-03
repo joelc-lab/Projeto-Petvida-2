@@ -1,3 +1,5 @@
+USE petvida;
+
 DELIMITER $$
 
 -- Procedure 1: Agendar consulta (insere consulta + pagamento pendente em transação)
@@ -83,11 +85,12 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Consulta não encontrada';
     END IF;
 
-    -- Busca pagamento vinculado
-    SELECT id, status INTO v_pagamento_id, v_status FROM pagamentos WHERE consulta_id = p_consulta_id LIMIT 1;
-    IF v_pagamento_id IS NULL THEN
+    -- Busca pagamento vinculado (verifica existência antes do SELECT INTO para evitar erro)
+    SELECT COUNT(*) INTO v_cnt FROM pagamentos WHERE consulta_id = p_consulta_id;
+    IF v_cnt = 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Pagamento não encontrado para a consulta';
     END IF;
+    SELECT id, status INTO v_pagamento_id, v_status FROM pagamentos WHERE consulta_id = p_consulta_id LIMIT 1;
 
     IF v_status = 'pago' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Pagamento já realizado';
