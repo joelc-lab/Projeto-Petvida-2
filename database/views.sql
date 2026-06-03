@@ -59,7 +59,7 @@ FROM animais a
 INNER JOIN tutores t ON a.tutor_id = t.id
 INNER JOIN especies e ON a.especie_id = e.id
 LEFT JOIN consultas c ON a.id = c.animal_id
-GROUP BY a.id;
+GROUP BY a.id, a.nome, t.nome, e.nome;
 
 -- 5)
 CREATE OR REPLACE VIEW vw_inadimplentes AS
