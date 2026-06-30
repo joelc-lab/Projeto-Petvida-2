@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: petvida-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: petvida
+      MYSQL_USER: petvida
+      MYSQL_PASSWORD: petvida
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database:/petvida-sql:ro
+      - ./database/docker-init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  mysql_data:
